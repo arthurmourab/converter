@@ -1,0 +1,10 @@
+# webstorm
+.idea
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# production
+/build
