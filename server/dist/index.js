@@ -8,9 +8,10 @@ const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.get('*', (req, res) => {
-    res.status(200).sendFile(path_1.default.resolve('index.html'));
+    res.status(200).sendFile(path_1.default.resolve('../../client/index.html'));
 });
-app.listen(5000, () => {
+const PORT = Number(process.env.SERVER_PORT);
+app.listen(PORT ? PORT : 5000, () => {
     console.log('Servidor rodando na porta 5000');
 });
 //# sourceMappingURL=index.js.map
