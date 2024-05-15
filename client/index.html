@@ -2,18 +2,135 @@
 <html>
 <head>
     <title>Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        #celsius-div,
+        #fahrenheit-div {
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"] {
+            width: 90%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 3px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        span {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Converter</h1>
-    <div>
+    <h1>Temperature Converter</h1>
+    <div id="celsius-div">
         <h3>
-            Temperature  
+            Celsius to Fahrenheit
         </h3>
-        <li>
-            <ul>Celsius to Fahrenheit</ul>
-            <ul>Fahrenheit to Celsius</ul>
-        </li>
+        <label for="celsius-input">Temperature in celsius:</label>
+        <input type="number" id="celsius-input" name="celsius">
+
+        <button onclick="convertTemperatures()">Convert</button>
     </div>
+    <div id="fahrenheit-div">
+        <h3>
+            Fahrenheit to Celsius
+        </h3>
+        <label for="fahrenheit-input">Temperature in fahrenheit:</label>
+        <input type="number" id="fahrenheit-input" name="fahrenheit">
+
+        <button onclick="convertTemperatures()">Convert</button>
+    </div>
+    <script>
+        function removePreviousElement () {
+            const previousCelsiusElement = document.getElementById('celsius-span');
+            if (previousCelsiusElement) previousCelsiusElement.remove();
+
+            const previousFahrenheitElement = document.getElementById('fahrenheit-span');
+            if (previousFahrenheitElement) previousFahrenheitElement.remove();
+        }
+        function appendResults (result) {
+            removePreviousElement();
+
+            const celsiusResultHtml = document.createElement('span');
+            celsiusResultHtml.setAttribute('id', 'celsius-span');
+            celsiusResultHtml.innerHTML = "RESULT: " + result.celsiusTemperature.toFixed(1) + " ºC";
+
+            const celsiusDiv = document.getElementById('fahrenheit-div');
+            if (result.celsiusTemperature!== 0) celsiusDiv.append(celsiusResultHtml);
+
+
+            const fahrenheitResultHtml = document.createElement('span');
+            fahrenheitResultHtml.setAttribute('id', 'fahrenheit-span');
+            fahrenheitResultHtml.innerHTML = "RESULT: " + result.fahrenheitTemperature.toFixed(1) + " ºF";
+
+            const fahrenheitDiv = document.getElementById('celsius-div');
+            if (result.fahrenheitTemperature!== 0) fahrenheitDiv.append(fahrenheitResultHtml);
+        }
+        async function convertTemperatures() {
+            const celsiusTemperature = document.getElementById('celsius-input').value;
+            const fahrenheitTemperature = document.getElementById('fahrenheit-input').value;
+            const response = await fetch('/convert', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    celsiusTemperature: celsiusTemperature,
+                    fahrenheitTemperature: fahrenheitTemperature,
+                }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                appendResults(result);
+            }
+        }
+
+    </script>
 </body>
 </html>
